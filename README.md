@@ -1,26 +1,11 @@
-CoinbaseProReturnCalculator
+# Coinbase Pro Return Calculator
 
-Visit https://pro.coinbase.com/orders/filled
+Visit https://pro.coinbase.com/orders/filled to download your statement in CSV format
 
-Scroll down to the bottom of the table and choose: "Displaying past 90 days. To see full history, download statements."
+![coinbase pro orders section](https://i.imgur.com/x9rwwv5.jpg)
 
-In the pop-up, choose:
-
-Product*
-All Products
-
-Start Date*
-Earliest transaction date
-
-End Date*
-Today's date
-
-Format*
-CSV
-
-Email*
-your email
+![coinbase pro statements section](https://i.imgur.com/yUau34c.jpg)
 
 The statement will be sent to your email address. You can download the CSV file from here.
 
-Place the CSV in the Data folder
+Place 'fills.csv' in the 'Data' folder, and if necessary Copy to output directory
