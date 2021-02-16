@@ -4,7 +4,7 @@
 
 Console output from dummy fills.csv file:
 
-<img src="ttps://i.imgur.com/Ulszmuf.png">
+<img src="https://i.imgur.com/Ulszmuf.png">
 
 Visit https://pro.coinbase.com/orders/filled to download your statement in CSV format
 
