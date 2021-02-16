@@ -1,4 +1,4 @@
-# Coinbase Pro Return Calculator
+# Coinbase Pro Return Calculator - A Console App
 
 **First version for UK users who have bought in Euros (using SEPA bank transfer). It will calculate the return from Crypto ordered on Coinbase Pro, with key-free API calls to get the current Crypto price and also the current GBP-Euro price for displaying prices in GBP**
 
