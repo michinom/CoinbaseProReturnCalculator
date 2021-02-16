@@ -13,13 +13,6 @@ namespace CoinbaseProReturnCalculator
             var amount = cryptoUnit.Sum(x => x.Size);
             var totalSpend = cryptoUnit.Sum(x => x.Total * -1);
 
-            /*
-            if (crypto == "GRT")
-            {
-                amount += 8.41m;
-            }
-            */
-
             var coinbaseApiService = new ApiHelperService();
             var currentPrice = coinbaseApiService
                 .GetCurrentCryptoValue(crypto);

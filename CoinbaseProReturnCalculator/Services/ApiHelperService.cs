@@ -45,5 +45,4 @@ namespace CoinbaseProReturnCalculator
     {
         public BitCoin data { get; set; }
     }
-
 }
