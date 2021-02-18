@@ -9,7 +9,7 @@ namespace CoinbaseProReturnCalculator
 
         public decimal GetCurrentCryptoValue(string unit)
         {
-            HttpResponseMessage response = _client.GetAsync("https://api.coinbase.com/v2/prices/" + unit + "-EUR/buy").Result;
+            HttpResponseMessage response = _client.GetAsync("https://api.coinbase.com/v2/prices/" + unit + "-EUR/sell").Result;
             var resp = response.Content.ReadAsStringAsync().Result;
             var currentPrice = JsonConvert.DeserializeObject<BitCoinModel>(resp).data;
             return currentPrice.amount;
