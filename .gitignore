@@ -336,3 +336,5 @@ ASALocalRun/
 
 # Specflow feature code behind files
 *.feature.cs
+
+*.csv

@@ -1,4 +1,4 @@
-﻿namespace CoinbaseProReturnCalculator
+﻿namespace CoinbaseProReturnCalculator.Models
 {
     public class CoinbaseCsvModel
     {

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using CoinbaseProReturnCalculator.Models;
 using CsvHelper;
 
-namespace CoinbaseProReturnCalculator
+namespace CoinbaseProReturnCalculator.Services
 {
     public class CsvParserService
     {

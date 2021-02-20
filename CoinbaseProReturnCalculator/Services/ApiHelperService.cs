@@ -1,48 +1,62 @@
 ﻿using System.Net.Http;
 using Newtonsoft.Json;
 
-namespace CoinbaseProReturnCalculator
+namespace CoinbaseProReturnCalculator.Services
 {
     public class ApiHelperService
     {
         private readonly HttpClient _client = new HttpClient();
 
-        public decimal GetCurrentCryptoValue(string unit)
+        public decimal GetCurrentCryptoValue(string unit, string price)
         {
-            HttpResponseMessage response = _client.GetAsync("https://api.coinbase.com/v2/prices/" + unit + "-EUR/sell").Result;
-            var resp = response.Content.ReadAsStringAsync().Result;
-            var currentPrice = JsonConvert.DeserializeObject<BitCoinModel>(resp).data;
-            return currentPrice.amount;
+            var uri = "https://api.coinbase.com/v2/prices/" + unit + "-EUR/" + price;
+
+            string resp = ApiCall(uri);
+
+            var currentPrice = JsonConvert.DeserializeObject<BitCoinModel>(resp).Data;
+            return currentPrice.Amount;
         }
 
         public decimal GetCurrentGbp(decimal euro)
         {
-            HttpResponseMessage response = _client.GetAsync("https://api.exchangeratesapi.io/latest?symbols=GBP").Result;
-            var resp = response.Content.ReadAsStringAsync().Result;
-            var currentPrice = JsonConvert.DeserializeObject<Euro>(resp).rates;
+            var uri = "https://api.exchangeratesapi.io/latest?symbols=GBP";
 
-            var gbpPrice = euro * currentPrice.GBP;
+            var resp = ApiCall(uri);
+
+            var currentPrice = JsonConvert.DeserializeObject<Euro>(resp).Rates;
+            var gbpPrice = euro * currentPrice.Gbp;
             return gbpPrice;
+        }
+
+        private string ApiCall(string uri)
+        {
+            HttpResponseMessage response = _client.GetAsync(uri).Result;
+            var resp = response.Content.ReadAsStringAsync().Result;
+            return resp;
         }
     }
 
     public class Euro
     {
-        public Rates rates { get; set; }
+        [JsonProperty("rates")]
+        public Rates Rates { get; set; }
     }
 
     public class Rates
     {
-        public decimal GBP { get; set; }
+        [JsonProperty("GBP")]
+        public decimal Gbp { get; set; }
     }
 
     public class BitCoin
     {
-        public decimal amount { get; set; }
+        [JsonProperty("amount")]
+        public decimal Amount { get; set; }
     }
 
     public class BitCoinModel
     {
-        public BitCoin data { get; set; }
+        [JsonProperty("data")]
+        public BitCoin Data { get; set; }
     }
 }

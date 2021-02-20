@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using CoinbaseProReturnCalculator.Models;
 
-namespace CoinbaseProReturnCalculator
+namespace CoinbaseProReturnCalculator.Services
 {
     public class CalculatorService
     {
-        public TableRows CalculateReturn(List<CoinbaseCsvModel> records, string crypto)
+        public TableRows CalculateReturn(List<CoinbaseCsvModel> records, string crypto, string price)
         {
             var cryptoUnit = records.Where(x => x.SizeUnit == crypto);
             var amount = cryptoUnit.Sum(x => x.Size);
@@ -15,7 +15,7 @@ namespace CoinbaseProReturnCalculator
 
             var coinbaseApiService = new ApiHelperService();
             var currentPrice = coinbaseApiService
-                .GetCurrentCryptoValue(crypto);
+                .GetCurrentCryptoValue(crypto, price);
 
             var weightAverageRows = 0m;
             foreach (var row in cryptoUnit)
