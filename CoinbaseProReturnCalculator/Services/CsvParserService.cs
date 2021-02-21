@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using CoinbaseProReturnCalculator.Models;
+using CoinbaseProReturnCalculator.Abstractions.Models;
 using CsvHelper;
 
 namespace CoinbaseProReturnCalculator.Services
 {
     public class CsvParserService
     {
-        public List<CoinbaseCsvModel> ReadCsvFile(string fileName)
+        // No references to class properties or values, so can be made static.
+        // You could also make this async if you wanted.
+        // You can also return an IEnumerable here as it doesn't need to concretely be a list.
+        public static IEnumerable<CoinbaseCsvModel> ReadCsvFile(string fileName)
         {
             var reader = new StreamReader($"Data/{fileName}");
             var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             {
                 var records = new List<CoinbaseCsvModel>();
+                
                 csv.Read();
                 csv.ReadHeader();
                 while (csv.Read())

@@ -1,6 +1,6 @@
-﻿namespace CoinbaseProReturnCalculator.Models
+﻿namespace CoinbaseProReturnCalculator.Abstractions.Models
 {
-    public class TableRows
+    public class TableRow
     {
         public string Name { get; set; }
         public decimal Amount { get; set; }
