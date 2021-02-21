@@ -1,20 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using CoinbaseProReturnCalculator.Models;
+using System.Threading.Tasks;
+using CoinbaseProReturnCalculator.Abstractions.Interfaces;
+using CoinbaseProReturnCalculator.Abstractions.Models;
 
 namespace CoinbaseProReturnCalculator.Services
 {
-    public class CalculatorService
+    public class CalculatorService : ICalculatorService
     {
-        public TableRows CalculateReturn(List<CoinbaseCsvModel> records, string crypto, string price)
+        
+        private readonly IApiHelperService _apiHelperService;
+        private readonly ICurrencyService _currencyService;
+        
+        // We passed these in so that we only need to instantiate them once.
+        public CalculatorService(IApiHelperService apiHelperService, ICurrencyService currencyService)
+        {
+            _apiHelperService = apiHelperService;
+            _currencyService = currencyService;
+        }
+
+        public async Task<TableRow> CalculateReturn(IEnumerable<CoinbaseCsvModel> records, string crypto, string price)
         {
             var cryptoUnit = records.Where(x => x.SizeUnit == crypto);
             var amount = cryptoUnit.Sum(x => x.Size);
             var totalSpend = cryptoUnit.Sum(x => x.Total * -1);
-
-            var coinbaseApiService = new ApiHelperService();
-            var currentPrice = coinbaseApiService
+            
+            var currentPrice = await _apiHelperService
                 .GetCurrentCryptoValue(crypto, price);
 
             var weightAverageRows = 0m;
@@ -31,7 +43,7 @@ namespace CoinbaseProReturnCalculator.Services
             var percDiff = ((currentValue - totalSpend) / totalSpend)
                 .ToString("P", CultureInfo.InvariantCulture);
 
-            var tableRow = new TableRows
+            var tableRow = new TableRow
             {
                 Name = crypto,
                 Amount = amount,
@@ -51,10 +63,9 @@ namespace CoinbaseProReturnCalculator.Services
             return euroAmount.ToString("C", new CultureInfo("en-IE"));
         }
 
-        private static string Gbp(decimal euroAmount)
+        private string Gbp(decimal baseAmount)
         {
-            var coinbaseApiService = new ApiHelperService();
-            var gbpPrice = coinbaseApiService.GetCurrentGbp(euroAmount);
+            var gbpPrice = _currencyService.ConvertToCurrency(baseAmount, "GBP");
             return gbpPrice.ToString("C", new CultureInfo("en-GB"));
         }
     }

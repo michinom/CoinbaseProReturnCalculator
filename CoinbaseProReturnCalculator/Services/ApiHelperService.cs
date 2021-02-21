@@ -1,62 +1,47 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
+using CoinbaseProReturnCalculator.Abstractions.Interfaces;
+using CoinbaseProReturnCalculator.Abstractions.Models;
 using Newtonsoft.Json;
 
 namespace CoinbaseProReturnCalculator.Services
 {
-    public class ApiHelperService
+    public class ApiHelperService : IApiHelperService
     {
-        private readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _httpClient;
 
-        public decimal GetCurrentCryptoValue(string unit, string price)
+        public ApiHelperService(HttpClient httpClient)
         {
-            var uri = "https://api.coinbase.com/v2/prices/" + unit + "-EUR/" + price;
+            _httpClient = httpClient;
+        }
 
-            string resp = ApiCall(uri);
+        public async Task<decimal> GetCurrentCryptoValue(string unit, string price)
+        {
+            var uri = $"https://api.coinbase.com/v2/prices/{unit}-EUR/{price}";
 
-            var currentPrice = JsonConvert.DeserializeObject<BitCoinModel>(resp).Data;
+            string resp = await ApiCall(uri);
+
+            var currentPrice = JsonConvert.DeserializeObject<CoinbaseDataModel>(resp).Data;
             return currentPrice.Amount;
         }
 
-        public decimal GetCurrentGbp(decimal euro)
+        public async Task<CurrencyModel> GetExchangeRates()
         {
-            var uri = "https://api.exchangeratesapi.io/latest?symbols=GBP";
+            const string uri = "https://api.exchangeratesapi.io/latest";
 
-            var resp = ApiCall(uri);
+            var resp = await ApiCall(uri);
 
-            var currentPrice = JsonConvert.DeserializeObject<Euro>(resp).Rates;
-            var gbpPrice = euro * currentPrice.Gbp;
-            return gbpPrice;
+            var currencies = JsonConvert.DeserializeObject<CurrencyModel>(resp);
+            return currencies;
         }
 
-        private string ApiCall(string uri)
+        private async Task<string> ApiCall(string uri)
         {
-            HttpResponseMessage response = _client.GetAsync(uri).Result;
-            var resp = response.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage response = await _httpClient.GetAsync(uri);
+            var resp = await response.Content.ReadAsStringAsync();
             return resp;
         }
     }
 
-    public class Euro
-    {
-        [JsonProperty("rates")]
-        public Rates Rates { get; set; }
-    }
-
-    public class Rates
-    {
-        [JsonProperty("GBP")]
-        public decimal Gbp { get; set; }
-    }
-
-    public class BitCoin
-    {
-        [JsonProperty("amount")]
-        public decimal Amount { get; set; }
-    }
-
-    public class BitCoinModel
-    {
-        [JsonProperty("data")]
-        public BitCoin Data { get; set; }
-    }
+    
 }
